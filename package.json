@@ -12,6 +12,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "dotenv": "^18.0.4",
+    "mongodb": "^7.6.0",
     "nodemon": "^3.1.14"
   }
 }
