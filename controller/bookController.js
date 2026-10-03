@@ -1,77 +1,54 @@
-const url = require("url");
-const BookModel = require("./../model/book");
+// const url = require("url");
+const { booksModel, booksSchema } = require("./../model/book");
 
 const getAll = async (req, res) => {
-  const books = await BookModel.find();
-  res.writeHead(200, { "content-type": "application/json" });
-  res.write(JSON.stringify(books));
-  res.end();
-};
-
-const removeOne = async (req, res) => {
-  const parsedURL = url.parse(req.url, true);
-  const bookID = parsedURL.query.id;
-
-  const removedBook = await BookModel.remove(bookID);
-  res.writeHead(200, { "content-type": "application/json" });
-  res.write(JSON.stringify(removedBook));
-  res.end();
+  const books = await booksModel.find({});
+  res.status(200).json(books);
 };
 
 const createBook = async (req, res) => {
-  let book = "";
-  req.on("data", (data) => {
-    book = book + data.toString();
+  const { title, author, price } = req.body;
+  await booksModel.create({
+    title,
+    author,
+    price,
   });
-
-  req.on("end", async () => {
-    const { title, author, price } = JSON.parse(book);
-    if (title === "" || author === "" || price < 0) {
-      res.writeHead(402, { "content-type": "application/json" });
-      res.write(JSON.stringify({ message: "invalid data" }));
-      res.end();
-    }
-    const newBook = { ...JSON.parse(book), free: 1 };
-    const createdBook = await BookModel.create(newBook);
-
-    res.writeHead(201, { "content-type": "application/json" });
-    res.write(JSON.stringify(createdBook));
-    res.end();
-  });
-};
-
-const back = async (req, res) => {
-  const parsedURL = url.parse(req.url, true);
-  const bookID = parsedURL.query.id;
-
-  const backedBook = await BookModel.backTheBook(bookID);
-  res.writeHead(200, { "content-type": "application/json" });
-  res.write(JSON.stringify(backedBook));
-  res.end();
+  res.status(201).json({ message: "book created successfully" });
 };
 
 const updateBook = async (req, res) => {
-  const parsedURL = url.parse(req.url, true);
-  const bookID = parsedURL.query.id;
+  const { title, author, price, id } = req.body;
 
-  let bookUpdatedInfo = "";
-  req.on("data", (data) => {
-    bookUpdatedInfo = bookUpdatedInfo + data.toString();
-  });
-  req.on("end", async () => {
-    const reqBody = JSON.parse(bookUpdatedInfo);
-    const updatedBook = await BookModel.update(bookID, reqBody);
+  await booksModel.updateOne(
+    { _id: id },
+    {
+      $set: {
+        title,
+        author,
+        price,
+      },
+    },
+  );
+  res.status(200).json({ message: "book updated successfuly" });
+};
 
-    res.writeHead(200, { "content-type": "application/json" });
-    res.write(JSON.stringify(updatedBook));
-    res.end();
-  });
+const removeBooK = async (req, res) => {
+  const { id } = req.body;
+
+  await booksModel.deleteOne({ _id: id });
+  res.status(200).json({ message: "book remove successsfully" });
+};
+
+const back = async (req, res) => {
+  const { id } = req.body;
+  await booksModel.updateOne({ _id: id }, { $set: { free: 1 } });
+  res.status(200).json({ message: "books backed successfully" });
 };
 
 module.exports = {
   getAll,
-  removeOne,
+  removeBooK,
   createBook,
-  back,
   updateBook,
+  back,
 };

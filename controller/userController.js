@@ -1,6 +1,5 @@
 const isUserExists = require("../middleware/isUserExists");
 const userModel = require("./../model/user");
-const url = require("url");
 
 exports.getAll = async (req, res) => {
   const allUsers = await userModel.find({}, "-__v");
