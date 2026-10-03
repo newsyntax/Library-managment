@@ -1,17 +1,13 @@
-const RentModel = require("./../model/rent");
-
+const rentBooksModel = require("./../model/rent");
+const {booksModel} = require("./../model/book");
 const rentBook = async (req, res) => {
-  let reqBody = "";
-  req.on("data", (data) => {
-    reqBody = reqBody + data.toString();
+  const { bookID, userID } = req.body;
+  await booksModel.updateOne({ _id: bookID }, { $set: { free: 0 } });
+  await rentBooksModel.create({
+    bookID,
+    userID,
   });
-
-  req.on("end", async () => {
-    const rentedBook = await RentModel.rentBook(reqBody);
-    res.writeHead(201, { "content-type": "application/json" });
-    res.write(JSON.stringify(rentedBook));
-    res.end();
-  });
+  res.status(201).json({ message: "book rents successfully" });
 };
 
 module.exports = {

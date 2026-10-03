@@ -12,3 +12,5 @@ const rentBookSchema = mongoose.Schema({
 });
 
 const rentBooksModel = mongoose.model("rent", rentBookSchema);
+
+module.exports = rentBooksModel;
