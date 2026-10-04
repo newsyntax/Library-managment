@@ -1,5 +1,6 @@
 const { courseModel, courseSchema } = require("./../model/course");
 const { commentModel } = require("./../model/comment");
+const fs = require("fs");
 const { courseSessionModel } = require("../model/courseSession");
 exports.createCourse = async (req, res) => {
   const { title, teacherID } = req.body;
@@ -8,7 +9,12 @@ exports.createCourse = async (req, res) => {
     teacher: teacherID,
   });
 
-  res.status(201).json({ message: "course created ✅" });
+  fs.mkdir(title, (error) => {
+    if (error) {
+      throw error;
+    }
+    res.status(201).json({ message: "course created ✅" });
+  });
 };
 
 exports.getAll = async (req, res) => {
@@ -16,6 +22,7 @@ exports.getAll = async (req, res) => {
     .find({})
     .populate("teacher", "-__v -_id")
     .select("-__v -_id");
+
   res.status(200).json(courses);
 };
 
@@ -23,7 +30,10 @@ exports.getOne = async (req, res) => {
   const { title } = req.params;
   const course = await courseModel.findOne({ title });
   const comments = await commentModel.find({ courseID: course._id });
-  const sessions = await courseSessionModel.find({ courseID: course._id }, "-__v -_id  -courseID");
+  const sessions = await courseSessionModel.find(
+    { courseID: course._id },
+    "-__v -_id  -courseID",
+  );
 
   res.status(200).json({ course, comments, sessions });
 };
