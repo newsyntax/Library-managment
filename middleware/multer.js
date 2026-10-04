@@ -7,7 +7,14 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const fileName = Date.now() + Math.random();
     const extention = path.extname(file.originalname);
-    cb(null, `${fileName}${extention}`);
+
+    const validFormats = [".jpg", ".png", ".jpeg"];
+
+    if (validFormats.includes(extention)) {
+      cb(null, `${fileName}${extention}`);
+    } else {
+      cb(new Error("format not accepted"));
+    }
   },
 });
 
