@@ -9,5 +9,6 @@ coursesRouter
 
 coursesRouter.route("/:title").get(courseController.getOne);
 coursesRouter.route("/comment").post(courseController.addCommnet);
+coursesRouter.route("/session").post(courseController.addSession);
 
 module.exports = coursesRouter;

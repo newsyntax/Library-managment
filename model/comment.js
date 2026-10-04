@@ -5,7 +5,7 @@ const commentSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  couseID: {
+  courseID: {
     type: mongoose.Types.ObjectId,
     require: true,
     ref: "courses",

@@ -1,5 +1,6 @@
 const { courseModel, courseSchema } = require("./../model/course");
 const { commentModel } = require("./../model/comment");
+const { courseSessionModel } = require("../model/courseSession");
 exports.createCourse = async (req, res) => {
   const { title, teacherID } = req.body;
   await courseModel.create({
@@ -22,18 +23,24 @@ exports.getOne = async (req, res) => {
   const { title } = req.params;
   const course = await courseModel.findOne({ title });
   const comments = await commentModel.find({ courseID: course._id });
+  const sessions = await courseSessionModel.find({ courseID: course._id }, "-__v -_id  -courseID");
 
-  res.status(200).json({ course, comments });
+  res.status(200).json({ course, comments, sessions });
 };
 
 exports.addCommnet = async (req, res) => {
   const { body, courseID } = req.body;
-  const comment = await commentModel.create({ body, courseID });
-
-  await courseModel.updateOne(
-    { _id: courseID.toString() },
-    { $push: { comments: comment._id } },
-  );
+  await commentModel.create({ body, courseID });
 
   res.status(201).json({ message: "comment set successfully ✅" });
+};
+
+exports.addSession = async (req, res) => {
+  const { courseID, title, time } = req.body;
+  await courseSessionModel.create({
+    title,
+    time,
+    courseID,
+  });
+  res.status(201).json({ message: "session added" });
 };

@@ -17,6 +17,12 @@ courseSchema.virtual("comments", {
   localField: "_id",
   foreignField: "courseID",
 });
+
+courseSchema.virtual("sessions", {
+  ref: "session",
+  localField: "_id",
+  foreignField: "courseID",
+});
 const courseModel = mongoose.model("couses", courseSchema);
 
 module.exports = { courseModel, courseSchema };
