@@ -5,6 +5,11 @@ const commentSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  couseID: {
+    type: mongoose.Types.ObjectId,
+    require: true,
+    ref: "courses",
+  },
 });
 
 const commentModel = mongoose.model("Comment", commentSchema);

@@ -10,9 +10,13 @@ const courseSchema = mongoose.Schema({
     ref: "teacher",
     require: true,
   },
-  comments: [{ type: mongoose.Types.ObjectId, ref: "Comment", require: true }],
 });
 
+courseSchema.virtual("comments", {
+  ref: "comments",
+  localField: "_id",
+  foreignField: "courseID",
+});
 const courseModel = mongoose.model("couses", courseSchema);
 
 module.exports = { courseModel, courseSchema };
