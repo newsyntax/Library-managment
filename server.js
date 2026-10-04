@@ -15,7 +15,7 @@ app.use("/api/rent", rentsRouter);
 app.use("/api/teachers", teachersRouter);
 app.use("/api/courses", coursesRouter);
 
-app.post("/upload", uploader.single("file"), async (req, res) => {
+app.post("/upload", uploader.array("file", 3), async (req, res) => {
   res.status(200).json({ message: "file uploaded !!!" });
 });
 
