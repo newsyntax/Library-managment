@@ -15,14 +15,14 @@ app.use("/api/rent", rentsRouter);
 app.use("/api/teachers", teachersRouter);
 app.use("/api/courses", coursesRouter);
 
-app.get("/upload", uploader.array("file", 3), async (req, res) => {
+app.post("/upload", uploader.array("file", 3), async (req, res) => {
   res.status(200).json({ message: "file uploaded !!!" });
 });
 
-app.use((error, res, req, next) => {
+app.use((err, req, res, next) => {
   return res.json({
-    statusCode: error.status || 500,
-    message: error.message || "enternal error",
+    statusCode: err.status || 500,
+    msg: err.message || "internal error",
   });
 });
 
